@@ -25,7 +25,6 @@ app.use((req, res, next) => {
 });
 
 
-
 // Proxy endpoints
 app.use('/fpl', createProxyMiddleware({
   target: API_SERVICE_URL,
@@ -34,7 +33,6 @@ app.use('/fpl', createProxyMiddleware({
        [`^/fpl`]: '',
 	},
 }));
-
 
 // Start the Proxy
 app.listen(PORT, HOST, () => {
