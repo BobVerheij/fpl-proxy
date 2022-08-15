@@ -43,6 +43,8 @@ const fetchAllElementSummaries = async (bootstrap: Bootstrap) => {
 };
 
 const updateData = async () => {
+  console.log("fetch data request");
+
   const dateFetched = new Date().toLocaleDateString("en-EN", {
     weekday: "long",
     year: "numeric",
@@ -57,6 +59,7 @@ const updateData = async () => {
 
   if (!summaries || !bootstrap) {
     data = { ...data, dateFetched };
+    console.log("No summary or bootstrap");
     return;
   }
 
