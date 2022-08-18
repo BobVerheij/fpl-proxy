@@ -12,8 +12,12 @@
   "license": "ISC",
   "dependencies": {
     "@types/node": "^18.7.4",
+    "axios": "^0.27.2",
+    "cross-fetch": "^3.1.5",
     "express": "^4.17.1",
     "fpl-api": "^4.0.4",
+    "node": "^16.17.0",
+    "node-fetch": "^3.2.10",
     "prettier": "^2.7.1"
   },
   "devDependencies": {

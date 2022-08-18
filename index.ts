@@ -1,7 +1,9 @@
-import { Bootstrap, ElementSummary } from "fpl-api";
+import { Bootstrap, ElementSummary, fetchElementSummary } from "fpl-api";
 
 import express from "express";
-import { fetchBootstrap, fetchElementSummary } from "fpl-api";
+import { fetchBootstrap } from "fpl-api";
+
+import fetch from "cross-fetch";
 
 // Create Express Server
 const app = express();
@@ -26,21 +28,12 @@ let data: iData = {
   sumLength: 0,
 };
 
-const fetchAllElementSummaries = async (bootstrap: Bootstrap) => {
-  const summaries: ElementSummary[] = [];
-
-  bootstrap?.elements.forEach(async (el) => {
-    let summary: ElementSummary | undefined = undefined;
-
-    try {
-      summary = await fetchElementSummary(el.id);
-      if (summary) summaries.push(summary);
-    } catch (e) {
-      console.error(e);
-    }
-  });
-  return summaries;
-};
+interface IFetchWithTimeout {
+  url: string;
+  id: number;
+  options: RequestInit;
+  timeout: number;
+}
 
 const updateData = async () => {
   console.log("fetch data request");
@@ -54,8 +47,51 @@ const updateData = async () => {
     minute: "2-digit",
   });
 
+  data = { ...data, dateFetched };
+
   const bootstrap = await fetchBootstrap();
-  const summaries = await fetchAllElementSummaries(bootstrap);
+
+  const start = new Date();
+  const delay = (ms = 100) => new Promise((r) => setTimeout(r, ms));
+
+  const fetchAll = async () => {
+    const summaries: ElementSummary[] = [];
+
+    const items = bootstrap?.elements.map((el) => el.id);
+
+    for (let index = 0; index < items.length; index++) {
+      await delay();
+      try {
+        const response = await fetchElementSummary(items[index]);
+
+        if (response) {
+          summaries.push(response);
+        } else {
+          console.log("fetch did not work");
+        }
+        // @ts-ignore
+        // const response: AxiosResponse<ElementSummary, string> = await axios.get(
+        //   `https://fantasy.premierleague.com/api/element-summary/${items[index]}`
+        // );
+        // // @ts-ignore
+        // summaries.push(response.data);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    return summaries;
+  };
+
+  const summaries = await fetchAll();
+  const end = new Date();
+
+  console.log(
+    summaries?.length +
+      " items fetched in " +
+      (end.getTime() - start.getTime()) / 1000 +
+      " seconds"
+  );
 
   if (!summaries || !bootstrap) {
     data = { ...data, dateFetched };
@@ -78,7 +114,7 @@ const updateData = async () => {
     dateChanged,
     dateFetched,
     summaries,
-    sumLength: summaries.length,
+    sumLength: summaries?.length,
   };
 };
 
@@ -88,7 +124,7 @@ setTimeout(async () => {
 
 setInterval(async () => {
   await updateData();
-}, 60000);
+}, 600000);
 
 app.use((req: any, res: any, next: any) => {
   res.append("Access-Control-Allow-Origin", ["*"]);
@@ -97,8 +133,28 @@ app.use((req: any, res: any, next: any) => {
   next();
 });
 
-app.get("/bootstrap", (req: any, res: any, next: any) => {
-  res.send(data);
+app.get("/poll", async (req: any, res: any, next: any) => {
+  res.send({
+    summaryCount: data?.sumLength,
+    dateChanged: data?.dateChanged,
+  });
+});
+
+app.get("/test", async (req: any, res: any, next: any) => {
+  const { offset = 0, limit = 1000, noBootstrap = false } = req.query;
+  console.log(
+    data.summaries?.slice(Number(offset), Number(offset) + Number(limit))
+  );
+  res.send({
+    ...data,
+    bootstrap: noBootstrap === "true" ? undefined : data?.bootstrap,
+    summaries: data.summaries?.slice(
+      Number(offset),
+      Number(offset) + Number(limit)
+    ),
+    offset,
+    limit,
+  });
 });
 
 // Start the Proxy
