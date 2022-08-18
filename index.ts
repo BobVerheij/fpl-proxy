@@ -140,7 +140,7 @@ app.get("/poll", async (req: any, res: any, next: any) => {
   });
 });
 
-app.get("/test", async (req: any, res: any, next: any) => {
+app.get("/", async (req: any, res: any, next: any) => {
   const { offset = 0, limit = 1000, noBootstrap = false } = req.query;
   console.log(
     data.summaries?.slice(Number(offset), Number(offset) + Number(limit))
