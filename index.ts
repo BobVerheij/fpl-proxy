@@ -3,7 +3,7 @@ import { Bootstrap, ElementSummary, fetchElementSummary } from "fpl-api";
 import express from "express";
 import { fetchBootstrap } from "fpl-api";
 
-import fetch from "cross-fetch";
+import cron from "node-cron";
 
 // Create Express Server
 const app = express();
@@ -118,13 +118,9 @@ const updateData = async () => {
   };
 };
 
-setTimeout(async () => {
+cron.schedule("* * * * *", async () => {
   await updateData();
-}, 100);
-
-setInterval(async () => {
-  await updateData();
-}, 600000);
+});
 
 app.use((req: any, res: any, next: any) => {
   res.append("Access-Control-Allow-Origin", ["*"]);
