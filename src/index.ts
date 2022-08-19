@@ -1,13 +1,12 @@
 import { Bootstrap, ElementSummary, fetchElementSummary } from "fpl-api";
 
 import express from "express";
+import serverless from "serverless-http";
 import { fetchBootstrap } from "fpl-api";
-
-import cron from "node-cron";
 
 // Create Express Server
 const app = express();
-
+const router = express.Router();
 // Configuration
 const PORT = 8080;
 const HOST = "localhost";
@@ -27,13 +26,6 @@ let data: iData = {
   summaries: [],
   sumLength: 0,
 };
-
-interface IFetchWithTimeout {
-  url: string;
-  id: number;
-  options: RequestInit;
-  timeout: number;
-}
 
 const updateData = async () => {
   console.log("fetch data request");
@@ -123,14 +115,14 @@ app.use((req: any, res: any, next: any) => {
   next();
 });
 
-app.get("/poll", async (req: any, res: any, next: any) => {
+router.get("/poll", async (req: any, res: any, next: any) => {
   res.send({
     summaryCount: data?.sumLength,
     dateChanged: data?.dateChanged,
   });
 });
 
-app.get("/", async (req: any, res: any, next: any) => {
+router.get("/", async (req: any, res: any, next: any) => {
   const { offset = 0, limit = 1000, noBootstrap = false } = req.query;
   console.log(
     data.summaries?.slice(Number(offset), Number(offset) + Number(limit))
@@ -146,9 +138,7 @@ app.get("/", async (req: any, res: any, next: any) => {
   });
 });
 
-// Start the Server
-app.listen(PORT, HOST, () => {
-  console.log(`Starting server at ${HOST}:${PORT}`);
-});
+app.use("/.netlify/functions/api", router);
 
-export default app;
+module.exports = app;
+module.exports.handler = serverless(app);
