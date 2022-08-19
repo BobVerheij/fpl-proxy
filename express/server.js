@@ -29,15 +29,17 @@ const updateData = async () => {
   }
 
   const summaries = [];
-  if (data?.bootstrap?.elements) {
-    const items = data?.bootstrap?.elements.map((el) => el.id);
+  if (data.bootstrap) {
+    if (data.bootstrap.elements) {
+      const items = data.bootstrap.elements.map((el) => el.id);
 
-    for (let i = 0; i < items.length; i++) {
-      await delay();
-      const summary = await fetchElementSummary(items[i]);
-      console.log(items[i]);
-      if (summary) {
-        summaries.push(summary);
+      for (let i = 0; i < items.length; i++) {
+        await delay();
+        const summary = await fetchElementSummary(items[i]);
+        console.log(items[i]);
+        if (summary) {
+          summaries.push(summary);
+        }
       }
     }
   }
