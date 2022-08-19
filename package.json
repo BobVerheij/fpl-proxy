@@ -5,6 +5,7 @@
   "main": "express/server.js",
   "type": "module",
   "scripts": {
+    "build": "echo 'no build'",
     "dev": "nodemon server-local.js",
     "start": "node ./express/server.js"
   },
