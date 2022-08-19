@@ -1,12 +1,10 @@
 "use strict";
-const express = require("express");
-const serverless = require("serverless-http");
+import express, { Router } from "express";
+import { fetchBootstrap, fetchElementSummary } from "fpl-api";
+
 const app = express();
-const { fetchBootstrap, fetchElementSummary } = require("fpl-api");
 
 const data = {
-  a: "a",
-  b: "b",
   updated: "",
   bootstrap: undefined,
   summaries: [],
@@ -27,21 +25,19 @@ const updateData = async () => {
   }
 
   const summaries = [];
-  if (data.bootstrap) {
-    if (data.bootstrap.elements) {
-      const items = data.bootstrap.elements.slice(0, 50).map((el) => el.id);
+  if (data?.bootstrap?.elements) {
+    const items = data.bootstrap.elements.map((el) => el.id);
 
-      for (let i = 0; i < items.length; i++) {
-        await delay();
-        try {
-          const summary = await fetchElementSummary(items[i]);
-          console.log(items[i]);
-          if (summary) {
-            summaries.push(summary);
-          }
-        } catch (e) {
-          console.error;
+    for (let i = 0; i < items.length; i++) {
+      await delay();
+      try {
+        const summary = await fetchElementSummary(items[i]);
+        console.log(items[i]);
+        if (summary) {
+          summaries.push(summary);
         }
+      } catch (e) {
+        console.error;
       }
     }
   }
@@ -66,13 +62,12 @@ setTimeout(async () => {
   await updateData();
 }, 100);
 
-const router = express.Router();
+const router = Router();
 
 router.get("/", (req, res) => {
   res.status(200).send(data);
 });
 
-app.use("/.netlify/functions/server", router); // path must route to lambda
+app.use("/app", router); // path must route to lambda
 
-module.exports = app;
-module.exports.handler = serverless(app);
+export default app;

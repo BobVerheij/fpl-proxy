@@ -1,33 +1,24 @@
 {
-  "name": "netlify-express",
+  "name": "fpl-back-end",
   "version": "0.0.1",
-  "description": "Example of how to deploy a Express.js Netlify app.",
-  "main": "functions/server.js",
+  "description": "Super quick back end for fpl usage",
+  "main": "express/server.js",
+  "type": "module",
   "scripts": {
-    "build": "netlify-lambda build express",
-    "start": "nodemon server-local.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/neverendingqs/netlify-express.git"
+    "dev": "nodemon server-local.js",
+    "start": "node ./express/server.js"
   },
   "keywords": [
-    "netlify",
+    "fantasy football",
+    "fpl",
     "express.js"
   ],
-  "author": "neverendingqs",
-  "license": "Apache-2.0",
-  "bugs": {
-    "url": "https://github.com/neverendingqs/netlify-express/issues"
-  },
-  "homepage": "https://github.com/neverendingqs/netlify-express#readme",
+  "author": "Bob Verheij",
   "dependencies": {
     "fpl-api": "^4.0.4"
   },
   "devDependencies": {
     "express": "^4.17.1",
-    "netlify-lambda": "^1.6.3",
-    "nodemon": "^1.19.2",
-    "serverless-http": "^2.3.0"
+    "nodemon": "^1.19.2"
   }
 }
