@@ -31,14 +31,18 @@ const updateData = async () => {
   const summaries = [];
   if (data.bootstrap) {
     if (data.bootstrap.elements) {
-      const items = data.bootstrap.elements.map((el) => el.id);
+      const items = data.bootstrap.elements.slice(0, 50).map((el) => el.id);
 
       for (let i = 0; i < items.length; i++) {
         await delay();
-        const summary = await fetchElementSummary(items[i]);
-        console.log(items[i]);
-        if (summary) {
-          summaries.push(summary);
+        try {
+          const summary = await fetchElementSummary(items[i]);
+          console.log(items[i]);
+          if (summary) {
+            summaries.push(summary);
+          }
+        } catch (e) {
+          console.error;
         }
       }
     }
@@ -71,7 +75,6 @@ router.get("/", (req, res) => {
 
 app.use(bodyParser.json());
 app.use("/.netlify/functions/server", router); // path must route to lambda
-app.use("/", (req, res) => res.sendFile(path.join(__dirname, "../index.html")));
 
 module.exports = app;
 module.exports.handler = serverless(app);
