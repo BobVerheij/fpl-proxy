@@ -1,8 +1,7 @@
-import { Bootstrap, ElementSummary, fetchElementSummary } from "fpl-api";
+const { fetchElementSummary, fetchBootstrap } = require("fpl-api");
 
-import express from "express";
-import serverless from "serverless-http";
-import { fetchBootstrap } from "fpl-api";
+const express = require("express");
+const serverless = require("serverless-http");
 
 // Create Express Server
 const app = express();

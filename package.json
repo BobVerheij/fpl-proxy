@@ -1,33 +1,34 @@
 {
-  "name": "proxy",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.ts",
+  "name": "netlify-express",
+  "version": "0.0.1",
+  "description": "Example of how to deploy a Express.js Netlify app.",
+  "main": "functions/server.js",
   "scripts": {
-    "start": "./node_modules/.bin/netlify-lambda serve src",
-    "build": "./node_modules/.bin/netlify-lambda build src",
-    "dev": "nodemon ./src/index.ts"
+    "build": "netlify-lambda build express",
+    "start": "nodemon server-local.js"
   },
-  "author": "",
-  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/neverendingqs/netlify-express.git"
+  },
+  "keywords": [
+    "netlify",
+    "express.js"
+  ],
+  "author": "neverendingqs",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/neverendingqs/netlify-express/issues"
+  },
+  "homepage": "https://github.com/neverendingqs/netlify-express#readme",
   "dependencies": {
-    "@netlify/functions": "^1.2.0",
-    "@types/node": "^18.7.4",
-    "axios": "^0.27.2",
-    "cross-fetch": "^3.1.5",
-    "express": "^4.17.1",
-    "fpl-api": "^4.0.4",
-    "netlify-lambda": "^2.0.15",
-    "node": "^16.17.0",
-    "node-cron": "^3.0.2",
-    "node-fetch": "^3.2.10",
-    "prettier": "^2.7.1",
-    "serverless-http": "^3.0.2"
+    "fpl-api": "^4.0.4"
   },
   "devDependencies": {
-    "@types/express": "^4.17.13",
-    "@types/node-cron": "^3.0.2",
-    "ts-node": "^10.9.1",
-    "typescript": "^4.7.4"
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "netlify-lambda": "^1.6.3",
+    "nodemon": "^1.19.2",
+    "serverless-http": "^2.3.0"
   }
 }
