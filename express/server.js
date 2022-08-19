@@ -55,15 +55,13 @@ const updateData = async () => {
   }
 };
 
-if (serverStarted) {
-  setInterval(async () => {
-    await updateData();
-  }, 300000);
+setInterval(async () => {
+  await updateData();
+}, 300000);
 
-  setTimeout(async () => {
-    await updateData();
-  }, 100);
-}
+setTimeout(async () => {
+  await updateData();
+}, 100);
 
 const router = Router();
 
