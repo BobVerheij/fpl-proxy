@@ -66,7 +66,7 @@ setTimeout(async () => {
 
 const router = express.Router();
 router.get("/", (req, res) => {
-  res.status(200).send({ summaries: data.summaries });
+  res.status(200).send(data);
 });
 
 app.use(bodyParser.json());
