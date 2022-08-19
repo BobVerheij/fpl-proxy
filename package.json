@@ -2,11 +2,9 @@
   "name": "fpl-back-end",
   "version": "0.0.1",
   "description": "Super quick back end for fpl usage",
-  "main": "express/server.js",
   "type": "module",
   "scripts": {
-    "build": "echo 'no build'",
-    "dev": "nodemon server.js",
+    "dev": "nodemon ./express/server.js",
     "start": "node ./express/server.js"
   },
   "keywords": [

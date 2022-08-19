@@ -3,6 +3,8 @@ import { fetchBootstrap, fetchElementSummary } from "fpl-api";
 
 const app = express();
 
+let serverStarted = false;
+
 const data = {
   updated: "",
   bootstrap: undefined,
@@ -53,13 +55,15 @@ const updateData = async () => {
   }
 };
 
-setInterval(async () => {
-  await updateData();
-}, 300000);
+if (serverStarted) {
+  setInterval(async () => {
+    await updateData();
+  }, 300000);
 
-setTimeout(async () => {
-  await updateData();
-}, 100);
+  setTimeout(async () => {
+    await updateData();
+  }, 100);
+}
 
 const router = Router();
 
@@ -68,5 +72,10 @@ router.get("/", (req, res) => {
 });
 
 app.use("/app", router); // path must route to lambda
+
+app.listen(8080, () => {
+  serverStarted = true;
+  console.log("Listening on port 8080!");
+});
 
 export default app;
