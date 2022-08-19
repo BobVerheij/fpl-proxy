@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "echo 'no build'",
-    "dev": "nodemon server-local.js",
+    "dev": "nodemon server.js",
     "start": "node ./express/server.js"
   },
   "keywords": [
