@@ -65,16 +65,11 @@ const updateData = async () => {
         const response = await fetchElementSummary(items[index]);
 
         if (response) {
+          console.log(response.id);
           summaries.push(response);
         } else {
           console.log("fetch did not work");
         }
-        // @ts-ignore
-        // const response: AxiosResponse<ElementSummary, string> = await axios.get(
-        //   `https://fantasy.premierleague.com/api/element-summary/${items[index]}`
-        // );
-        // // @ts-ignore
-        // summaries.push(response.data);
       } catch (e) {
         console.error(e);
       }
@@ -118,9 +113,8 @@ const updateData = async () => {
   };
 };
 
-cron.schedule("* * * * *", async () => {
-  await updateData();
-});
+setTimeout(() => updateData(), 1000);
+setInterval(() => updateData(), 300000);
 
 app.use((req: any, res: any, next: any) => {
   res.append("Access-Control-Allow-Origin", ["*"]);
@@ -144,10 +138,9 @@ app.get("/", async (req: any, res: any, next: any) => {
   res.send({
     ...data,
     bootstrap: noBootstrap === "true" ? undefined : data?.bootstrap,
-    summaries: data.summaries?.slice(
-      Number(offset),
-      Number(offset) + Number(limit)
-    ),
+    summaries: data.sumLength
+      ? data.summaries?.slice(Number(offset), Number(offset) + Number(limit))
+      : undefined,
     offset,
     limit,
   });
