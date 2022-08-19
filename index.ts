@@ -146,7 +146,9 @@ app.get("/", async (req: any, res: any, next: any) => {
   });
 });
 
-// Start the Proxy
+// Start the Server
 app.listen(PORT, HOST, () => {
   console.log(`Starting server at ${HOST}:${PORT}`);
 });
+
+export default app;
