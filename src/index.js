@@ -11,15 +11,7 @@ const router = express.Router();
 const PORT = 8080;
 const HOST = "localhost";
 
-interface iData {
-  bootstrap?: Bootstrap;
-  dateFetched?: string;
-  dateChanged?: string;
-  summaries?: ElementSummary[];
-  sumLength?: number;
-}
-
-let data: iData = {
+let data = {
   bootstrap: undefined,
   dateFetched: "",
   dateChanged: "",
@@ -47,7 +39,7 @@ const updateData = async () => {
   const delay = (ms = 100) => new Promise((r) => setTimeout(r, ms));
 
   const fetchAll = async () => {
-    const summaries: ElementSummary[] = [];
+    const summaries = [];
 
     const items = bootstrap?.elements.map((el) => el.id);
 
@@ -108,21 +100,21 @@ const updateData = async () => {
 setTimeout(() => updateData(), 1000);
 setInterval(() => updateData(), 300000);
 
-app.use((req: any, res: any, next: any) => {
+app.use((req, res, next) => {
   res.append("Access-Control-Allow-Origin", ["*"]);
   res.append("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
   res.append("Access-Control-Allow-Headers", "Content-Type");
   next();
 });
 
-router.get("/poll", async (req: any, res: any, next: any) => {
+router.get("/poll", async (req, res, next) => {
   res.send({
     summaryCount: data?.sumLength,
     dateChanged: data?.dateChanged,
   });
 });
 
-router.get("/", async (req: any, res: any, next: any) => {
+router.get("/", async (req, res, next) => {
   const { offset = 0, limit = 1000, noBootstrap = false } = req.query;
   console.log(
     data.summaries?.slice(Number(offset), Number(offset) + Number(limit))
