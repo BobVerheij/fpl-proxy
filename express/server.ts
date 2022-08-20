@@ -1,4 +1,4 @@
-import express = require("express");
+import express from "express";
 
 import {
   Bootstrap,
@@ -152,5 +152,3 @@ app.listen(8080, () => {
   serverStarted = true;
   console.log("Listening on port 8080!");
 });
-
-export default app;
