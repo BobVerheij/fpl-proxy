@@ -8,6 +8,5 @@ RUN npm ci
 
 COPY . .
 
-RUN tsc
 
-CMD [ "node", "./dist/server.js" ]
+CMD [ "npm", "run", "start" ]
