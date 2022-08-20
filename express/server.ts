@@ -17,7 +17,7 @@ let serverStarted = false;
 interface IData {
   updated?: string;
   bootstrap?: Bootstrap;
-  summaries?: ElementSummary[];
+  players?: Player[];
   succesfulUpdate?: string;
 }
 
@@ -30,7 +30,7 @@ interface Player {
 const data: IData = {
   updated: "",
   bootstrap: undefined,
-  summaries: [],
+  players: [],
   succesfulUpdate: "",
 };
 
@@ -47,7 +47,7 @@ const updateData = async () => {
     data.bootstrap = bootstrap;
   }
 
-  const summaries: ElementSummary[] = [];
+  const players: Player[] = [];
   if (data?.bootstrap?.elements) {
     const items = data.bootstrap.elements.map((el) => el.id);
 
@@ -57,7 +57,13 @@ const updateData = async () => {
         const summary = await fetchElementSummary(items[i]);
         console.log(items[i]);
         if (summary) {
-          summaries.push(summary);
+          players.push({
+            id: summary.id,
+            basic: data?.bootstrap?.elements?.find(
+              (el) => el.id === summary.id
+            ),
+            summary,
+          });
         }
       } catch (e) {
         console.error;
@@ -65,11 +71,11 @@ const updateData = async () => {
     }
   }
 
-  if (summaries.length) {
-    data.summaries = summaries;
+  if (players.length) {
+    data.players = players;
   }
 
-  if (bootstrap && summaries.length) {
+  if (bootstrap && players.length) {
     data.succesfulUpdate =
       new Date().toLocaleDateString("en-EN") +
       " " +
@@ -88,45 +94,40 @@ setTimeout(async () => {
 const router = express.Router();
 
 router.get("/players", (req, res) => {
-  const { playerType = undefined, playerId = undefined } = req.query;
+  const {
+    playerType = undefined,
+    playerId = undefined,
+    offset = 0,
+    limit = 10000,
+  } = req.query;
 
   if (playerType) {
-    const players = data.bootstrap?.elements
-      .filter((el) => el.element_type === Number(playerType))
-      .map((el) => {
-        return {
-          id: el.id,
-          basic: el,
-          summary: data.summaries?.find((sum) => sum.id === Number(playerType)),
-        };
-      });
-    res.status(200).send({ playerType, players });
+    const players = data.players.filter(
+      (player) => player.basic.element_type === Number(playerType)
+    );
+
+    res.status(200).send({
+      playerType,
+      players: players.slice(Number(offset), Number(limit) + Number(offset)),
+    });
   }
 
   if (playerId) {
-    const player: Player = { id: Number(playerId) };
-
-    player.basic = data.bootstrap?.elements.find(
-      (el) => el.id === Number(playerId)
+    const player: Player = data?.players.find(
+      (player) => player.id === Number(playerId)
     );
 
-    player.summary = data.summaries?.find((sum) => sum.id === Number(playerId));
-
-    if (player.id) {
+    if (player) {
       res.status(200).send(player);
     }
   }
 
-  const players = data.bootstrap?.elements.map((el) => {
-    return {
-      id: el.id,
-      basic: el,
-      summary: data.summaries?.find((sum) => sum.id === Number(el.id)),
-    };
-  });
-
-  if (players?.length) {
-    res.status(200).send(players);
+  if (data?.players?.length) {
+    res
+      .status(200)
+      .send(
+        data?.players.slice(Number(offset), Number(limit) + Number(offset))
+      );
   }
 
   res.status(400).send("No data yet");
@@ -144,7 +145,17 @@ router.get("/poll", (req, res) => {
     lastAttempt: data.updated,
     lastUpdate: data.succesfulUpdate,
     hasBootstrap: !!data.bootstrap,
-    hasSummaries: !!data.summaries?.length,
+    n_players: !!data.players?.length,
+    n_goalies: data.players.filter((player) => player.basic.element_type === 1)
+      .length,
+    n_defenders: data.players.filter(
+      (player) => player.basic.element_type === 2
+    ).length,
+    n_midfielders: data.players.filter(
+      (player) => player.basic.element_type === 3
+    ).length,
+    n_forwards: data.players.filter((player) => player.basic.element_type === 4)
+      .length,
   });
 });
 
