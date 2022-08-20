@@ -113,7 +113,7 @@ router.get("/players", (req, res) => {
     player.summary = data.summaries?.find((sum) => sum.id === Number(playerId));
 
     if (player.id) {
-      res.status(200).send({ playerType, player });
+      res.status(200).send(player);
     }
   }
 
@@ -126,7 +126,7 @@ router.get("/players", (req, res) => {
   });
 
   if (players?.length) {
-    res.status(200).send({ playerType, players });
+    res.status(200).send(players);
   }
 
   res.status(400).send("No data yet");
