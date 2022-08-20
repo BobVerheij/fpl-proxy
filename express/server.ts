@@ -121,7 +121,7 @@ router.get("/players", (req, res) => {
     return {
       id: el.id,
       basic: el,
-      summary: data.summaries?.find((sum) => sum.id === Number(playerType)),
+      summary: data.summaries?.find((sum) => sum.id === Number(el.id)),
     };
   });
 
