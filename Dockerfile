@@ -10,4 +10,5 @@ COPY . .
 
 EXPOSE 8080
 
-CMD [ "tsc", '&&', 'node', "dist/server.js" ]
+CMD [ "tsc && node dist/server.js" ]
+
