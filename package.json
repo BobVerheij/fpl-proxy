@@ -2,9 +2,10 @@
   "name": "fpl-back-end",
   "version": "0.0.1",
   "description": "Super quick back end for fpl usage",
+  "type": "module",
   "scripts": {
     "dev": "nodemon ./express/server.ts",
-    "start": "node --loader ts-node/esm ./express/server.ts"
+    "start": "ts-node ./express/server.ts"
   },
   "keywords": [
     "fantasy football",
