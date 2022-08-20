@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 
 import {
   Bootstrap,
@@ -9,6 +10,7 @@ import {
 } from "fpl-api";
 
 const app = express();
+app.use(cors());
 
 let serverStarted = false;
 

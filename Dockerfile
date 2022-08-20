@@ -8,6 +8,6 @@ RUN npm ci
 
 COPY . .
 
-EXPOSE 8080
+RUN tsc
 
-CMD [ "npm", "run", "start" ]
+CMD [ "node", "./dist/server.js" ]
