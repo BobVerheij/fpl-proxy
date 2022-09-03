@@ -9,8 +9,15 @@ import {
   fetchElementSummary,
 } from "fpl-api";
 
+import fetch from "node-fetch";
+
 const app = express();
-app.use(cors());
+
+const isLocal = process.env.IS_LOCAL === "true";
+
+if (!isLocal) {
+  app.use(cors());
+}
 
 let serverStarted = false;
 
@@ -128,17 +135,45 @@ router.get("/players", (req, res) => {
       .send(
         data?.players.slice(Number(offset), Number(limit) + Number(offset))
       );
+  } else {
+    console.log("no data");
+    res.statusCode = 404;
+    res.setHeader("Content-Type", "text/plain");
+    res.end("Cannot find data");
   }
-
-  res.status(400).send("No data yet");
 });
 
 router.get("/", (req, res) => {
-  if (data.bootstrap) {
-    res.status(200).send(data.bootstrap);
+  console.log({ hasBootstrap: !!data?.bootstrap });
+  if (data?.bootstrap) {
+    res.status(200).json(data.bootstrap).end();
+  } else {
+    res.statusCode = 404;
+    res.setHeader("Content-Type", "text/plain");
+    res.end("Cannot find data");
   }
-  res.status(400).send("No data yet");
 });
+
+// router.get("/team", async (req, res) => {
+//   console.log(req.cookies);
+
+//   const id = req.query.id;
+
+//   console.log(id);
+
+//   const response = await fetch(
+//     "https://fantasy.premierleague.com/api/my-team/?id=" + id
+//   );
+
+//   if (response.status === 200) {
+//     const team = response.json();
+//     console.log(team);
+//     res.status(200).json(team);
+//   } else {
+//     res.status(404);
+//   }
+//   res.end();
+// });
 
 router.get("/poll", (req, res) => {
   res.status(200).send({
